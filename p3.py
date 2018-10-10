@@ -24,7 +24,7 @@ class NewGrid:
         dico = {}
         with open(os.path.abspath(os.path.dirname(__file__)) + "/" + self.datafile, "r") as f:
             line_list = f.read().splitlines()
-            # print(line_list)
+
         for line in line_list:
             #use enumerate to get charac index. If I use "for charac in line" I only get the lowest index for the
             # same charac in line
@@ -35,37 +35,38 @@ class NewGrid:
 
 class Pygame:
 
-    def __init__(self):
+    def __init__(self, maze_dico):
+        self.maze_dico = maze_dico
         pass
 
-    def graphic_maze(self, maze_dico):
+    def graphic_maze(self):
         pygame.init()
 
-        # Ouverture de la fenêtre Pygame
+        # Pygame window opening
 
         fenetre = pygame.display.set_mode((450, 450))
 
-        # Chargement et collage du fond
+        # backgroung load and display
 
-        fond = pygame.image.load("background.jpg").convert()
+
+        fond = pygame.image.load(os.path.dirname(__file__) + "/" + "background.jpg").convert()
 
         fenetre.blit(fond, (0, 0))
 
-        # Chargement et collage des blocks
+        # maze graphic content load and display based on txt file
 
-        wall = pygame.image.load("wall.png").convert_alpha()
-        for key, value in maze_dico.items():
+        wall = pygame.image.load(os.path.dirname(__file__) + "/" + "wall.png").convert_alpha()
+        for key, value in self.maze_dico.items():
+            # wall picture size is 30 px * 30 px
             if value == "W":
-                fenetre.blit(wall, (int(key[2:4]) * 30, int(key[0:2]) * 30))          #L'image Wall a une largeur / longueur de 30 px
+                fenetre.blit(wall, (int(key[2:4]) * 30, int(key[0:2]) * 30))
 
-        # for i in range(0, 450, 30):
-        #     fenetre.blit(perso, (i, 0))
 
-        # Rafraîchissement de l'écran
+        # Screen refresh
 
         pygame.display.flip()
 
-        # BOUCLE INFINIE
+        # infinite loop
 
         continuer = 1
 
@@ -85,7 +86,7 @@ class Character:
 if __name__ == "__main__":
     grid1 = NewGrid("maze.txt")
     dico = grid1.setgrid()
-    pyga1 = Pygame()
-    pyga1.graphic_maze(dico)
+    pyga1 = Pygame(dico)
+    pyga1.graphic_maze()
 
 
