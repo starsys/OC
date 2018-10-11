@@ -25,12 +25,11 @@ class NewGrid:
         with open(os.path.abspath(os.path.dirname(__file__)) + "/" + self.datafile, "r") as f:
             line_list = f.read().splitlines()
 
-        for line in line_list:
+        for z, line in enumerate(line_list):
             #use enumerate to get charac index. If I use "for charac in line" I only get the lowest index for the
             # same charac in line
             for i,charac in enumerate(line):
-                dico["{:02d}".format(line_list.index(line)) + "{:02d}".format(i)] = charac
-        # print(dico)
+                dico["{:02d}".format(z) + "{:02d}".format(i)] = charac
         return dico
 
 class Pygame:
@@ -40,14 +39,28 @@ class Pygame:
         pass
 
     def graphic_maze(self):
+
+        BLOCK_PX_SIZE = 30
+
+        lines_list = []
+        rows_list = []
+
+        for coordinates in self.maze_dico.keys():
+            lines_list.append((coordinates)[0:2])
+            rows_list.append((coordinates)[2:4])
+
+        x_resolution = (int(max(rows_list)) + 1) * BLOCK_PX_SIZE
+        y_resolution = (int(max(lines_list)) + 1) * BLOCK_PX_SIZE
+
+        print(x_resolution)
+
         pygame.init()
 
         # Pygame window opening
 
-        fenetre = pygame.display.set_mode((450, 450))
+        fenetre = pygame.display.set_mode((x_resolution, y_resolution))
 
         # backgroung load and display
-
 
         fond = pygame.image.load(os.path.dirname(__file__) + "/" + "background.jpg").convert()
 
@@ -85,8 +98,8 @@ class Character:
 
 if __name__ == "__main__":
     grid1 = NewGrid("maze.txt")
-    dico = grid1.setgrid()
-    pyga1 = Pygame(dico)
+    dico_grid1 = grid1.setgrid()
+    pyga1 = Pygame(dico_grid1)
     pyga1.graphic_maze()
 
 
