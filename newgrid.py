@@ -6,9 +6,9 @@ class NewGrid:
 
     def __init__(self, datafile):
         self.datafile = datafile
+        self.dico = {}
 
     def setgrid(self):
-        dico = {}
         with open(os.path.abspath(os.path.dirname(__file__)) + "/" + self.datafile, "r") as f:
             line_list = f.read().splitlines()
 
@@ -18,5 +18,10 @@ class NewGrid:
             #use enumerate to get charac index. If I use "for charac in line" I only get the lowest index for the
             # same charac in line
             for i,charac in enumerate(line):
-                dico["{:02d}".format(z) + "{:02d}".format(i)] = charac
-        return dico
+                self.dico[(z, i)] = charac
+        return self.dico
+
+
+if __name__ == "__main__":
+    grid1 = NewGrid("maze.txt")
+    dico_grid1 = grid1.setgrid()

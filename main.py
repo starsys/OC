@@ -3,7 +3,7 @@
 from newgrid import *
 from pygame_interface import *
 
-""" Create "dico dictionnary" based on given "maze.txt" containing some lines of characters. 
+""" Create "dico dictionnary" based on a given "maze.txt" containing some lines of characters. 
 This .txt file represent the maze we want to create. Each character of each line symbolize a maze block.
 Block_types :
 "S" = maze start
