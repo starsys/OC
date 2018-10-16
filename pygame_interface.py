@@ -46,7 +46,7 @@ class Pygame:
 
         # charac import
         macgyver = pygame.image.load(os.path.dirname(__file__) + "/" + "images" + "/" + "macgyver.png").convert_alpha()
-        # define graphical init position of character
+        # define graphical init position of character (first occurrence of "S" value in maze_dico)
         position_macgyver = macgyver.get_rect(topleft=[key for key, value in self.maze_dico.items() if value == "S"][0])
 
         # Graph loop
@@ -57,18 +57,19 @@ class Pygame:
                 if event.type == QUIT:
                     continuer = 0
                 if event.type == KEYDOWN:
-                    if event.key == K_LEFT:
+                    if event.key == K_LEFT and self.maze_dico[tuple(list(position_macgyver.move(-Pygame.BLOCK_PX_SIZE, 0))[:2])] != "W":
                         position_macgyver = position_macgyver.move(-Pygame.BLOCK_PX_SIZE, 0)
-                    if event.key == K_RIGHT:
+                    elif event.key == K_RIGHT and self.maze_dico[tuple(list(position_macgyver.move(Pygame.BLOCK_PX_SIZE, 0))[:2])] != "W":
                         position_macgyver = position_macgyver.move(Pygame.BLOCK_PX_SIZE, 0)
-                    if event.key == K_UP:
+                    elif event.key == K_UP and self.maze_dico[tuple(list(position_macgyver.move(0, -Pygame.BLOCK_PX_SIZE))[:2])] != "W":
                         position_macgyver = position_macgyver.move(0, -Pygame.BLOCK_PX_SIZE)
-                    if event.key == K_DOWN:
+                    elif event.key == K_DOWN and self.maze_dico[tuple(list(position_macgyver.move(0, Pygame.BLOCK_PX_SIZE))[:2])] != "W":
                         position_macgyver = position_macgyver.move(0, Pygame.BLOCK_PX_SIZE)
              #Re-collage
-            fenetre.blit(fond, (0,0))
-            [fenetre.blit(wall, (key[0], key[1])) for key, value in self.maze_dico.items() if value == "W"]
+            fenetre.blit(fond, (0, 0))
+            [fenetre.blit(wall, key) for key, value in self.maze_dico.items() if value == "W"]
             fenetre.blit(macgyver, position_macgyver)
+
             #Rafraichissement
             pygame.display.flip()
 
