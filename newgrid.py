@@ -14,6 +14,7 @@ class NewGrid:
 
         # use enumerate to get line_list index. If I use "for line in line_list" I only get the lowest index for the
         # same line in line_list
+
         for z, line in enumerate(line_list):
             #use enumerate to get charac index. If I use "for charac in line" I only get the lowest index for the
             # same charac in line

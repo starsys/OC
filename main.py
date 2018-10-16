@@ -17,9 +17,8 @@ example : if maze's arrival is at the 2nd block of th e7th line, you'll find fol
 
 
 if __name__ == "__main__":
+
     grid1 = NewGrid("maze.txt")
     dico_grid1 = grid1.setgrid()
     pyga1 = Pygame(dico_grid1)
     pyga1.graphic_maze()
-
-
