@@ -10,9 +10,9 @@ Block_types :
 "A" = maze arrival
 "W" = maze wall
 "P" = maze path
-dico.keys are each block lines (2 digits) and rows (2 digits) coordinates.
+dico.keys are tuples. Each index correspond to line index (2 digits) and row index (2 digits) coordinates.
 dico.values are block_types ("S", "A", "W" or "P")
-example : if maze's arrival is at the 2nd block of th e7th line, you'll find following value in dico : {0701 = "A"}
+example : if maze's arrival is at the 2nd block of the 7th line, you'll find following value in dico : {(07, 01) = "A"}
 """
 
 

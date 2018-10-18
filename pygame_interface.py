@@ -9,13 +9,17 @@ class Pygame:
     BLOCK_PX_SIZE = 30
 
     def __init__(self, maze_dico):
-        self.maze_dico = maze_dico
+        self.maze_dico = self.maze_convert(maze_dico)
+        self.resolution()
+
+    def maze_convert(self, maze_dico):
         # maze_dico in pixel size and x/y coordinates inversion for graph usage
-        for key, value in list(self.maze_dico.items()):
-            self.maze_dico[((key[1] * Pygame.BLOCK_PX_SIZE), (key[0] * Pygame.BLOCK_PX_SIZE))] = value
+        for key, value in list(maze_dico.items()):
+            maze_dico[((key[1] * Pygame.BLOCK_PX_SIZE), (key[0] * Pygame.BLOCK_PX_SIZE))] = value
             # key (0, 0) is the single common key between original and updated dico. Should not be removed
             if key != ((0, 0)):
-                del self.maze_dico[key]
+                del maze_dico[key]
+        return maze_dico
 
     def get_max_line(self):
         return max([key[0] for key in self.maze_dico.keys()])
@@ -23,16 +27,24 @@ class Pygame:
     def get_max_row(self):
         return max([key[1] for key in self.maze_dico.keys()])
 
+    def resolution(self):
+        self.x_resolution = (self.get_max_row() + Pygame.BLOCK_PX_SIZE)
+        self.y_resolution = (self.get_max_line() + Pygame.BLOCK_PX_SIZE)
+
+    def format_move_pos(self, direction):
+        return tuple(list(self.position_macgyver.move(direction)))[0:2]
+
+    def new_pos(self, direction):
+        if self.format_move_pos(direction) in self.maze_dico and self.maze_dico[self.format_move_pos(direction)] != "W":
+            self.position_macgyver = self.position_macgyver.move(direction)
+        return self.position_macgyver
 
     def graphic_maze(self):
-
-        x_resolution = (self.get_max_row() + Pygame.BLOCK_PX_SIZE)
-        y_resolution = (self.get_max_line() + Pygame.BLOCK_PX_SIZE)
 
         pygame.init()
 
         # Pygame window opening
-        fenetre = pygame.display.set_mode((y_resolution, x_resolution))
+        fenetre = pygame.display.set_mode((self.y_resolution, self.x_resolution))
 
         # backgroung load
         fond = pygame.image.load(os.path.dirname(__file__) + "/" + "images" + "/" + "background.jpg").convert()
@@ -44,7 +56,8 @@ class Pygame:
         macgyver = pygame.image.load(os.path.dirname(__file__) + "/" + "images" + "/" + "macgyver.png").convert_alpha()
 
         # define graphical init position of character (first occurrence of "S" value in maze_dico)
-        position_macgyver = macgyver.get_rect(topleft=[key for key, value in self.maze_dico.items() if value == "S"][0])
+        self.position_macgyver = macgyver.get_rect(topleft=[key for key, value in self.maze_dico.items() if value == "S"][0])
+
 
         # Graph loop
         continuer = 1
@@ -55,29 +68,27 @@ class Pygame:
         up = (0, -Pygame.BLOCK_PX_SIZE)
         down = (0, Pygame.BLOCK_PX_SIZE)
 
-        # lambda function that return tuple corresponding of the character requested next position
-        check_pos = lambda direction: tuple(list(position_macgyver.move(direction))[:2])
-
         while continuer:
             for event in pygame.event.get():
                 if event.type == QUIT:
                     continuer = 0
                 if event.type == KEYDOWN:
-                    if event.key == K_LEFT and check_pos(left) in self.maze_dico and self.maze_dico[check_pos(left)] != "W":
-                        position_macgyver = position_macgyver.move(left)
-                    elif event.key == K_RIGHT and check_pos(right) in self.maze_dico and self.maze_dico[check_pos(right)] != "W":
-                        position_macgyver = position_macgyver.move(right)
-                    elif event.key == K_UP and check_pos(up) in self.maze_dico and self.maze_dico[check_pos(up)] != "W":
-                        position_macgyver = position_macgyver.move(up)
-                    elif event.key == K_DOWN and check_pos(down) in self.maze_dico and self.maze_dico[check_pos(down)] != "W":
-                        position_macgyver = position_macgyver.move(down)
+                    if event.key == K_LEFT:
+                        self.new_pos(left)
+                    elif event.key == K_RIGHT:
+                        self.new_pos(right)
+                    elif event.key == K_UP:
+                        self.new_pos(up)
+                    elif event.key == K_DOWN:
+                        self.new_pos(down)
              #Re-collage
             fenetre.blit(fond, (0, 0))
             [fenetre.blit(wall, key) for key, value in self.maze_dico.items() if value == "W"]
-            fenetre.blit(macgyver, position_macgyver)
+            fenetre.blit(macgyver, self.position_macgyver)
 
             #Rafraichissement
             pygame.display.flip()
+
 
 
 if __name__ == "__main__":
