@@ -28,10 +28,6 @@ class Pygame:
 
         x_resolution = (self.get_max_row() + Pygame.BLOCK_PX_SIZE)
         y_resolution = (self.get_max_line() + Pygame.BLOCK_PX_SIZE)
-        # self.maze_dico[(0, 0)] = "W"
-        # print(self.maze_dico[(0, 0)])
-
-
 
         pygame.init()
 
@@ -46,25 +42,35 @@ class Pygame:
 
         # charac import
         macgyver = pygame.image.load(os.path.dirname(__file__) + "/" + "images" + "/" + "macgyver.png").convert_alpha()
+
         # define graphical init position of character (first occurrence of "S" value in maze_dico)
         position_macgyver = macgyver.get_rect(topleft=[key for key, value in self.maze_dico.items() if value == "S"][0])
 
         # Graph loop
         continuer = 1
 
+        # direction move keys variable assignment
+        left = (-Pygame.BLOCK_PX_SIZE, 0)
+        right = (Pygame.BLOCK_PX_SIZE, 0)
+        up = (0, -Pygame.BLOCK_PX_SIZE)
+        down = (0, Pygame.BLOCK_PX_SIZE)
+
+        # lambda function that return tuple corresponding of the character requested next position
+        check_pos = lambda direction: tuple(list(position_macgyver.move(direction))[:2])
+
         while continuer:
             for event in pygame.event.get():
                 if event.type == QUIT:
                     continuer = 0
                 if event.type == KEYDOWN:
-                    if event.key == K_LEFT and self.maze_dico[tuple(list(position_macgyver.move(-Pygame.BLOCK_PX_SIZE, 0))[:2])] != "W":
-                        position_macgyver = position_macgyver.move(-Pygame.BLOCK_PX_SIZE, 0)
-                    elif event.key == K_RIGHT and self.maze_dico[tuple(list(position_macgyver.move(Pygame.BLOCK_PX_SIZE, 0))[:2])] != "W":
-                        position_macgyver = position_macgyver.move(Pygame.BLOCK_PX_SIZE, 0)
-                    elif event.key == K_UP and self.maze_dico[tuple(list(position_macgyver.move(0, -Pygame.BLOCK_PX_SIZE))[:2])] != "W":
-                        position_macgyver = position_macgyver.move(0, -Pygame.BLOCK_PX_SIZE)
-                    elif event.key == K_DOWN and self.maze_dico[tuple(list(position_macgyver.move(0, Pygame.BLOCK_PX_SIZE))[:2])] != "W":
-                        position_macgyver = position_macgyver.move(0, Pygame.BLOCK_PX_SIZE)
+                    if event.key == K_LEFT and check_pos(left) in self.maze_dico and self.maze_dico[check_pos(left)] != "W":
+                        position_macgyver = position_macgyver.move(left)
+                    elif event.key == K_RIGHT and check_pos(right) in self.maze_dico and self.maze_dico[check_pos(right)] != "W":
+                        position_macgyver = position_macgyver.move(right)
+                    elif event.key == K_UP and check_pos(up) in self.maze_dico and self.maze_dico[check_pos(up)] != "W":
+                        position_macgyver = position_macgyver.move(up)
+                    elif event.key == K_DOWN and check_pos(down) in self.maze_dico and self.maze_dico[check_pos(down)] != "W":
+                        position_macgyver = position_macgyver.move(down)
              #Re-collage
             fenetre.blit(fond, (0, 0))
             [fenetre.blit(wall, key) for key, value in self.maze_dico.items() if value == "W"]
