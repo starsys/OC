@@ -12,4 +12,4 @@ Each character of the maze.txt file symbolize following blocks :
 "A" = maze arrival
 "W" = maze wall
 "P" = maze path
-Only first occurrence of "S" and "A" from upper right of the file will be taken into account.
+Only first occurrence of "S" and "A" from upper left of the file will be taken into account.

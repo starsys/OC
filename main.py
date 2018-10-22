@@ -2,6 +2,7 @@
 
 from newgrid import *
 from pygame_interface import *
+from charac import *
 
 """ Create "dico dictionnary" based on a given "maze.txt" containing some lines of characters. 
 This .txt file represent the maze we want to create. Each character of each line symbolize a maze block.
@@ -20,5 +21,7 @@ if __name__ == "__main__":
 
     grid1 = NewGrid("maze.txt")
     dico_grid1 = grid1.setgrid()
-    pyga1 = Pygame(dico_grid1)
+    macgyver = Charac("macgyver", 1)
+    gardien = Charac("gardien", 0)
+    pyga1 = Pygame(dico_grid1, macgyver, gardien)
     pyga1.graphic_maze()

@@ -3,13 +3,16 @@
 import pygame
 from pygame.locals import *
 import os
+import random
 
 class Pygame:
 
     BLOCK_PX_SIZE = 30
 
-    def __init__(self, maze_dico):
+    def __init__(self, maze_dico, charac1, charac2):
         self.maze_dico = self.maze_convert(maze_dico)
+        self.charac1 = charac1
+        self.charac2 = charac2
         self.resolution()
 
     def maze_convert(self, maze_dico):
@@ -32,12 +35,17 @@ class Pygame:
         self.y_resolution = (self.get_max_line() + Pygame.BLOCK_PX_SIZE)
 
     def format_move_pos(self, direction):
-        return tuple(list(self.position_macgyver.move(direction)))[0:2]
+        return tuple(list(self.position_charac1.move(direction)))[0:2]
 
     def new_pos(self, direction):
         if self.format_move_pos(direction) in self.maze_dico and self.maze_dico[self.format_move_pos(direction)] != "W":
-            self.position_macgyver = self.position_macgyver.move(direction)
-        return self.position_macgyver
+            self.position_charac1 = self.position_charac1.move(direction)
+        return self.position_charac1
+
+    def get_random_position(self):
+        pos_list = [key for key, value in self.maze_dico.items() if value == "P" and value != "S" and value != "A"]
+        rand_numb = random.randint(0, len(pos_list) - 1)
+        return (pos_list.pop(rand_numb))
 
     def graphic_maze(self):
 
@@ -53,11 +61,15 @@ class Pygame:
         wall = pygame.image.load(os.path.dirname(__file__) + "/" + "images" + "/" + "wall.png").convert_alpha()
 
         # charac import
-        macgyver = pygame.image.load(os.path.dirname(__file__) + "/" + "images" + "/" + "macgyver.png").convert_alpha()
+        self.charac1.image = pygame.image.load(os.path.dirname(__file__) + "/" + "images" + "/" + self.charac1.name + ".png").convert_alpha()
+        self.charac2.image = pygame.image.load(os.path.dirname(__file__) + "/" + "images" + "/" + self.charac2.name + ".png").convert_alpha()
+        ether = pygame.image.load(os.path.dirname(__file__) + "/" + "images" + "/" + "ether.png").convert_alpha()
+        aiguille = pygame.image.load(os.path.dirname(__file__) + "/" + "images" + "/" + "aiguille.png").convert_alpha()
+        tube = pygame.image.load(os.path.dirname(__file__) + "/" + "images" + "/" + "tube.png").convert_alpha()
 
         # define graphical init position of character (first occurrence of "S" value in maze_dico)
-        self.position_macgyver = macgyver.get_rect(topleft=[key for key, value in self.maze_dico.items() if value == "S"][0])
-
+        self.position_charac1 = self.charac1.image.get_rect(topleft=[key for key, value in self.maze_dico.items() if value == "S"][0])
+        self.position_charac2 = self.charac2.image.get_rect(topleft=[key for key, value in self.maze_dico.items() if value == "A"][0])
 
         # Graph loop
         continuer = 1
@@ -67,6 +79,10 @@ class Pygame:
         right = (Pygame.BLOCK_PX_SIZE, 0)
         up = (0, -Pygame.BLOCK_PX_SIZE)
         down = (0, Pygame.BLOCK_PX_SIZE)
+
+        pos_ether = self.get_random_position()
+        pos_tube = self.get_random_position()
+        pos_aiguille = self.get_random_position()
 
         while continuer:
             for event in pygame.event.get():
@@ -84,7 +100,11 @@ class Pygame:
              #Re-collage
             fenetre.blit(fond, (0, 0))
             [fenetre.blit(wall, key) for key, value in self.maze_dico.items() if value == "W"]
-            fenetre.blit(macgyver, self.position_macgyver)
+            fenetre.blit(self.charac2.image, self.position_charac2)
+            fenetre.blit(self.charac1.image, self.position_charac1)
+            fenetre.blit(ether, pos_ether)
+            fenetre.blit(tube, pos_tube)
+            fenetre.blit(aiguille, pos_aiguille)
 
             #Rafraichissement
             pygame.display.flip()
@@ -93,7 +113,7 @@ class Pygame:
 
 if __name__ == "__main__":
 
-    pyga1 = Pygame({(0, 1): "W", (1, 2): "W"})
-
+    # pyga1 = Pygame({(0, 1): "W", (1, 2): "W"})
+    Pygame.get_random_position()
     # pyga1 = Pygame(dico_grid1)
     # pyga1.graphic_maze()
