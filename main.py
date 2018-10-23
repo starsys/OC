@@ -23,5 +23,8 @@ if __name__ == "__main__":
     dico_grid1 = grid1.setgrid()
     macgyver = Charac("macgyver", 1)
     gardien = Charac("gardien", 0)
-    pyga1 = Pygame(dico_grid1, macgyver, gardien)
+    # Pygame instance parameters are : an instance of Newgrid, one instance of "good" character (movable),
+    # one instance of "bad" character (not movable), any number of item's names to be picked up by the "good" character.
+    # item's and character's names should be the same as their related png file name. ("macgyver" for "macgyver.png")
+    pyga1 = Pygame(dico_grid1, macgyver, gardien, "ether", "tube", "aiguille")
     pyga1.graphic_maze()
