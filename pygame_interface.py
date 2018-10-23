@@ -17,6 +17,8 @@ class Pygame:
         self.position_charac1 = None
         self.item_dic = {}
         pygame.init()
+        self.caption = str(charac1.name).capitalize() + " a ramassé : "
+        pygame.display.set_caption(self.caption)
         self.resolution()
         # Pygame window opening
         self.window = pygame.display.set_mode((self.y_resolution, self.x_resolution))
@@ -51,8 +53,11 @@ class Pygame:
         self.x_resolution = (self.get_max_row() + Pygame.BLOCK_PX_SIZE)
         self.y_resolution = (self.get_max_line() + Pygame.BLOCK_PX_SIZE)
 
+    def format_pos(self, rect):
+        return tuple(rect)[:2]
+
     def format_move_pos(self, direction):
-        return tuple(list(self.position_charac1.move(direction)))[0:2]
+        return tuple(list(self.position_charac1.move(direction)))[:2]
 
     def new_pos(self, direction):
         if self.format_move_pos(direction) in self.maze_dico and self.maze_dico[self.format_move_pos(direction)] != "W":
@@ -62,13 +67,10 @@ class Pygame:
     def items_dic(self):
         pos_list = [key for key, value in self.maze_dico.items() if value == "P"]
         for item in self.items:
-            print(self.items)
-            print(item)
-            item = pygame.image.load(os.path.dirname(__file__) + "/" + "images" + "/" + item + ".png").convert_alpha()
             rand_numb = random.randint(0, len(pos_list) - 1)
-            self.item_dic[item] = pos_list.pop(rand_numb)
+            # create an items dictionary {"item_name": [random_position, picked_state 0=unpicked 1=already picked_up, image surface rect]}
+            self.item_dic[item] = [pos_list.pop(rand_numb), 0, pygame.image.load(os.path.dirname(__file__) + "/" + "images" + "/" + item + ".png").convert_alpha()]
         return self.item_dic
-
 
     def graphic_maze(self):
         # Graph loop
@@ -98,8 +100,17 @@ class Pygame:
             [self.window.blit(self.wall, key) for key, value in self.maze_dico.items() if value == "W"]
             self.window.blit(self.charac2_image, self.position_charac2)
             self.window.blit(self.charac1_image, self.position_charac1)
+
             for key, value in self.item_dic.items():
-                self.window.blit(key, value)
+                #test if charac came on item position. If yes, counter item value[1] is set to 1
+                if self.format_pos(self.position_charac1) == value[0] and value[1] != 1:
+                    self.item_dic[key][1] = 1
+                    self.caption += (str(key).capitalize() + " - ")
+                    if sum([value[1] for value in self.item_dic.values()]) == len(self.items):
+                        self.caption += " FIGHT !  "
+                elif value[1] != 1:
+                    self.window.blit(value[2], value[0])
+            pygame.display.set_caption(self.caption)
 
             #Rafraichissement
             pygame.display.flip()
