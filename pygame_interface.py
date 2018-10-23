@@ -16,7 +16,21 @@ class Pygame:
         self.items = items
         self.position_charac1 = None
         self.item_dic = {}
+        pygame.init()
         self.resolution()
+        # Pygame window opening
+        self.window = pygame.display.set_mode((self.y_resolution, self.x_resolution))
+        # backgroung load
+        self.background = pygame.image.load(os.path.dirname(__file__) + "/" + "images" + "/" + "background.jpg").convert()
+        # wall block load
+        self.wall = pygame.image.load(os.path.dirname(__file__) + "/" + "images" + "/" + "wall.png").convert_alpha()
+        # charac image import
+        self.charac1_image = pygame.image.load(os.path.dirname(__file__) + "/" + "images" + "/" + self.charac1.name + ".png").convert_alpha()
+        self.charac2_image = pygame.image.load(os.path.dirname(__file__) + "/" + "images" + "/" + self.charac2.name + ".png").convert_alpha()
+        # define graphical init position of character (first occurrence of "S" value in maze_dico)
+        self.position_charac1 = self.charac1_image.get_rect(topleft=[key for key, value in self.maze_dico.items() if value == "S"][0])
+        self.position_charac2 = self.charac2_image.get_rect(topleft=[key for key, value in self.maze_dico.items() if value == "A"][0])
+        self.items_dic()
 
     def maze_convert(self, maze_dico):
         # maze_dico in pixel size and x/y coordinates inversion for graph usage
@@ -45,46 +59,18 @@ class Pygame:
             self.position_charac1 = self.position_charac1.move(direction)
         return self.position_charac1
 
-    # def items_dic(self):                  # JE NE PEUX PAS UTILISER CETTE FONCTION CAR EN DEHORS PYGAME.INIT()
-    #     pos_list = [key for key, value in self.maze_dico.items() if value == "P"]
-    #     for item in self.items:
-    #         print(self.items)
-    #         print(item)
-    #         item = pygame.image.load(os.path.dirname(__file__) + "/" + "images" + "/" + item + ".png").convert_alpha()
-    #         rand_numb = random.randint(0, len(pos_list) - 1)
-    #         item_dic[item] = pos_list.pop(rand_numb)
-    #     return self.item_dic
-
-
-    def graphic_maze(self):
-
-        pygame.init()
-
-        # Pygame window opening
-        fenetre = pygame.display.set_mode((self.y_resolution, self.x_resolution))
-
-        # backgroung load
-        fond = pygame.image.load(os.path.dirname(__file__) + "/" + "images" + "/" + "background.jpg").convert()
-
-        # wall block load
-        wall = pygame.image.load(os.path.dirname(__file__) + "/" + "images" + "/" + "wall.png").convert_alpha()
-
-        # charac image import
-        self.charac1_image = pygame.image.load(os.path.dirname(__file__) + "/" + "images" + "/" + self.charac1.name + ".png").convert_alpha()
-        self.charac2_image = pygame.image.load(os.path.dirname(__file__) + "/" + "images" + "/" + self.charac2.name + ".png").convert_alpha()
-
-        # items loading
+    def items_dic(self):
         pos_list = [key for key, value in self.maze_dico.items() if value == "P"]
         for item in self.items:
+            print(self.items)
+            print(item)
             item = pygame.image.load(os.path.dirname(__file__) + "/" + "images" + "/" + item + ".png").convert_alpha()
             rand_numb = random.randint(0, len(pos_list) - 1)
             self.item_dic[item] = pos_list.pop(rand_numb)
+        return self.item_dic
 
 
-        # define graphical init position of character (first occurrence of "S" value in maze_dico)
-        self.position_charac1 = self.charac1_image.get_rect(topleft=[key for key, value in self.maze_dico.items() if value == "S"][0])
-        self.position_charac2 = self.charac2_image.get_rect(topleft=[key for key, value in self.maze_dico.items() if value == "A"][0])
-
+    def graphic_maze(self):
         # Graph loop
         continuer = 1
 
@@ -108,16 +94,15 @@ class Pygame:
                     elif event.key == K_DOWN:
                         self.new_pos(down)
              #Re-collage
-            fenetre.blit(fond, (0, 0))
-            [fenetre.blit(wall, key) for key, value in self.maze_dico.items() if value == "W"]
-            fenetre.blit(self.charac2_image, self.position_charac2)
-            fenetre.blit(self.charac1_image, self.position_charac1)
+            self.window.blit(self.background, (0, 0))
+            [self.window.blit(self.wall, key) for key, value in self.maze_dico.items() if value == "W"]
+            self.window.blit(self.charac2_image, self.position_charac2)
+            self.window.blit(self.charac1_image, self.position_charac1)
             for key, value in self.item_dic.items():
-                fenetre.blit(key, value)
+                self.window.blit(key, value)
 
             #Rafraichissement
             pygame.display.flip()
-
 
 
 if __name__ == "__main__":
