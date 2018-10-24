@@ -110,6 +110,16 @@ class Pygame:
                         self.caption += " FIGHT !  "
                 elif value[1] != 1:
                     self.window.blit(value[2], value[0])
+            if self.format_pos(self.position_charac1) == self.format_pos(self.position_charac2) and sum([value[1] for value in self.item_dic.values()]) == len(self.items):
+                self.caption = "VOUS AVEZ GAGNE !!! BRAVO !!!"
+                pygame.display.set_caption(self.caption)
+                pygame.time.delay(3000)
+                continuer = 0
+            elif self.format_pos(self.position_charac1) == self.format_pos(self.position_charac2) and sum([value[1] for value in self.item_dic.values()]) != len(self.items):
+                self.caption = "PERDU !!! IL MANQUAIT DES OBJETS !!!"
+                pygame.display.set_caption(self.caption)
+                pygame.time.delay(3000)
+                continuer = 0
             pygame.display.set_caption(self.caption)
 
             #Rafraichissement
