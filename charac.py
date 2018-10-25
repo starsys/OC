@@ -2,8 +2,7 @@
 
 class Charac():
 
-    def __init__(self, name, good):
+    def __init__(self, name):
         self.name = name
-        self.good = good
 
 

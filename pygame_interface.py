@@ -1,9 +1,11 @@
 # -*- coding: utf8 -*-
 
+
 import pygame
 from pygame.locals import *
 import os
 import random
+
 
 class Pygame:
 
@@ -19,19 +21,28 @@ class Pygame:
         pygame.init()
         self.caption = str(charac1.name).capitalize() + " a ramassé : "
         pygame.display.set_caption(self.caption)
+        self.x_resolution = None
+        self.y_resolution = None
         self.resolution()
+        # graph loop
+        self.loop = 1
         # Pygame window opening
         self.window = pygame.display.set_mode((self.y_resolution, self.x_resolution))
         # backgroung load
-        self.background = pygame.image.load(os.path.dirname(__file__) + "/" + "images" + "/" + "background.jpg").convert()
+        self.background = pygame.image.load(
+            os.path.dirname(__file__) + "/" + "images" + "/" + "background.jpg").convert()
         # wall block load
         self.wall = pygame.image.load(os.path.dirname(__file__) + "/" + "images" + "/" + "wall.png").convert_alpha()
         # charac image import
-        self.charac1_image = pygame.image.load(os.path.dirname(__file__) + "/" + "images" + "/" + self.charac1.name + ".png").convert_alpha()
-        self.charac2_image = pygame.image.load(os.path.dirname(__file__) + "/" + "images" + "/" + self.charac2.name + ".png").convert_alpha()
+        self.charac1_image = pygame.image.load(
+            os.path.dirname(__file__) + "/" + "images" + "/" + self.charac1.name + ".png").convert_alpha()
+        self.charac2_image = pygame.image.load(
+            os.path.dirname(__file__) + "/" + "images" + "/" + self.charac2.name + ".png").convert_alpha()
         # define graphical init position of character (first occurrence of "S" value in maze_dico)
-        self.position_charac1 = self.charac1_image.get_rect(topleft=[key for key, value in self.maze_dico.items() if value == "S"][0])
-        self.position_charac2 = self.charac2_image.get_rect(topleft=[key for key, value in self.maze_dico.items() if value == "A"][0])
+        self.position_charac1 = \
+            self.charac1_image.get_rect(topleft=[key for key, value in self.maze_dico.items() if value == "S"][0])
+        self.position_charac2 = \
+            self.charac2_image.get_rect(topleft=[key for key, value in self.maze_dico.items() if value == "A"][0])
         self.items_dic()
 
     def maze_convert(self, maze_dico):
@@ -39,7 +50,7 @@ class Pygame:
         for key, value in list(maze_dico.items()):
             maze_dico[((key[1] * Pygame.BLOCK_PX_SIZE), (key[0] * Pygame.BLOCK_PX_SIZE))] = value
             # key (0, 0) is the single common key between original and updated dico. Should not be removed
-            if key != ((0, 0)):
+            if key != (0, 0):
                 del maze_dico[key]
         return maze_dico
 
@@ -68,13 +79,41 @@ class Pygame:
         pos_list = [key for key, value in self.maze_dico.items() if value == "P"]
         for item in self.items:
             rand_numb = random.randint(0, len(pos_list) - 1)
-            # create an items dictionary {"item_name": [random_position, picked_state 0=unpicked 1=already picked_up, image surface rect]}
-            self.item_dic[item] = [pos_list.pop(rand_numb), 0, pygame.image.load(os.path.dirname(__file__) + "/" + "images" + "/" + item + ".png").convert_alpha()]
+            # create an items dictionary
+            # {"item_name": [random_position, picked_state 0=unpicked 1=already picked_up, image surface rect]}
+            self.item_dic[item] = [pos_list.pop(rand_numb), 0,
+                                   pygame.image.load(os.path.dirname(__file__) + "/"
+                                                     + "images" + "/" + item + ".png").convert_alpha()]
         return self.item_dic
 
+    def test_win(self):
+        if self.format_pos(self.position_charac1) == self.format_pos(self.position_charac2) and sum(
+                [value[1] for value in self.item_dic.values()]) == len(self.items):
+            self.caption = "VOUS AVEZ GAGNE !!! BRAVO !!!"
+            pygame.display.set_caption(self.caption)
+            pygame.time.delay(3000)
+            self.loop = 0
+        elif self.format_pos(self.position_charac1) == self.format_pos(self.position_charac2) and sum(
+                [value[1] for value in self.item_dic.values()]) != len(self.items):
+            self.caption = "PERDU !!! IL MANQUAIT DES OBJETS !!!"
+            pygame.display.set_caption(self.caption)
+            pygame.time.delay(3000)
+            self.loop = 0
+        # return self.continuer
+
+    def items_display(self):
+        for key, value in self.item_dic.items():
+            # test if charac came on item position. If yes, counter item value[1] is set to 1
+            if self.format_pos(self.position_charac1) == value[0] and value[1] != 1:
+                self.item_dic[key][1] = 1
+                self.caption += (str(key).capitalize() + " - ")
+                if sum([value[1] for value in self.item_dic.values()]) == len(self.items):
+                    self.caption += " FIGHT !  "
+            elif value[1] != 1:
+                self.window.blit(value[2], value[0])
+            # pass
+
     def graphic_maze(self):
-        # Graph loop
-        continuer = 1
 
         # direction move keys variable assignment
         left = (-Pygame.BLOCK_PX_SIZE, 0)
@@ -82,10 +121,10 @@ class Pygame:
         up = (0, -Pygame.BLOCK_PX_SIZE)
         down = (0, Pygame.BLOCK_PX_SIZE)
 
-        while continuer:
+        while self.loop:
             for event in pygame.event.get():
                 if event.type == QUIT:
-                    continuer = 0
+                    self.loop = 0
                 if event.type == KEYDOWN:
                     if event.key == K_LEFT:
                         self.new_pos(left)
@@ -95,34 +134,18 @@ class Pygame:
                         self.new_pos(up)
                     elif event.key == K_DOWN:
                         self.new_pos(down)
-             #Re-collage
+            # graph display
             self.window.blit(self.background, (0, 0))
             [self.window.blit(self.wall, key) for key, value in self.maze_dico.items() if value == "W"]
             self.window.blit(self.charac2_image, self.position_charac2)
             self.window.blit(self.charac1_image, self.position_charac1)
 
-            for key, value in self.item_dic.items():
-                #test if charac came on item position. If yes, counter item value[1] is set to 1
-                if self.format_pos(self.position_charac1) == value[0] and value[1] != 1:
-                    self.item_dic[key][1] = 1
-                    self.caption += (str(key).capitalize() + " - ")
-                    if sum([value[1] for value in self.item_dic.values()]) == len(self.items):
-                        self.caption += " FIGHT !  "
-                elif value[1] != 1:
-                    self.window.blit(value[2], value[0])
-            if self.format_pos(self.position_charac1) == self.format_pos(self.position_charac2) and sum([value[1] for value in self.item_dic.values()]) == len(self.items):
-                self.caption = "VOUS AVEZ GAGNE !!! BRAVO !!!"
-                pygame.display.set_caption(self.caption)
-                pygame.time.delay(3000)
-                continuer = 0
-            elif self.format_pos(self.position_charac1) == self.format_pos(self.position_charac2) and sum([value[1] for value in self.item_dic.values()]) != len(self.items):
-                self.caption = "PERDU !!! IL MANQUAIT DES OBJETS !!!"
-                pygame.display.set_caption(self.caption)
-                pygame.time.delay(3000)
-                continuer = 0
+            self.items_display()
+            self.test_win()
+
             pygame.display.set_caption(self.caption)
 
-            #Rafraichissement
+            # graph refresh
             pygame.display.flip()
 
 
