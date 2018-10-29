@@ -26,12 +26,12 @@ class Pygame:
         self.y_resolution = None
         self.resolution()
         # graph loop
-        self.loop = 1
+        self.game_loop = 1
         # Pygame window opening
         self.window = pygame.display.set_mode((self.y_resolution, self.x_resolution))
         # backgroung load
         self.background = pygame.image.load(
-            os.path.dirname(__file__) + "/" + "images" + "/" + "background.jpg").convert()
+            os.path.dirname(__file__) + "/" + "images" + "/" + "background_and_banner.jpg").convert()
         # wall block load
         self.wall = pygame.image.load(os.path.dirname(__file__) + "/" + "images" + "/" + "wall.png").convert_alpha()
         # charac image import
@@ -45,8 +45,12 @@ class Pygame:
         self.position_charac2 = \
             self.charac2_image.get_rect(topleft=[key for key, value in self.maze_dico.items() if value == "A"][0])
         self.items_dic()
-        self.banner = pygame.image.load(
-            os.path.dirname(__file__) + "/" + "images" + "/" + "banner.png").convert()
+        self.murdoc = pygame.image.load(
+            os.path.dirname(__file__) + "/" + "images" + "/" + "murdoc.jpg").convert()
+        self.victory = pygame.image.load(
+            os.path.dirname(__file__) + "/" + "images" + "/" + "victory.jpg").convert()
+        self.menu = 0
+        self.win = 0
 
     def maze_convert(self, maze_dico):
         # maze_dico in pixel size and x/y coordinates inversion for graph usage
@@ -94,15 +98,15 @@ class Pygame:
                 [value[1] for value in self.item_dic.values()]) == len(self.items):
             self.caption = "VOUS AVEZ GAGNE !!! BRAVO !!!"
             pygame.display.set_caption(self.caption)
-            pygame.time.delay(3000)
-            self.loop = 0
+            self.menu = 1
+            self.win = 1
+            # pygame.time.delay(3000)
         elif self.format_pos(self.position_charac1) == self.format_pos(self.position_charac2) and sum(
                 [value[1] for value in self.item_dic.values()]) != len(self.items):
             self.caption = "PERDU !!! IL MANQUAIT DES OBJETS !!!"
             pygame.display.set_caption(self.caption)
-            pygame.time.delay(3000)
-            self.loop = 0
-        # return self.continuer
+            self.menu = 1
+            self.win = 0
 
     def items_display(self):
         for key, value in self.item_dic.items():
@@ -115,7 +119,7 @@ class Pygame:
             elif value[1] != 1:
                 self.window.blit(value[2], value[0])
 
-    def inventory(self):
+    def inventory_banner_update(self):
         for key, value in self.item_dic.items():
             if value[1] == 1 and key == "tube":
                 self.window.blit(value[2], (105, 455))
@@ -132,34 +136,49 @@ class Pygame:
         up = (0, -Pygame.BLOCK_PX_SIZE)
         down = (0, Pygame.BLOCK_PX_SIZE)
 
-        while self.loop:
-            for event in pygame.event.get():
-                if event.type == QUIT:
-                    self.loop = 0
-                if event.type == KEYDOWN:
-                    if event.key == K_LEFT:
-                        self.new_pos(left)
-                    elif event.key == K_RIGHT:
-                        self.new_pos(right)
-                    elif event.key == K_UP:
-                        self.new_pos(up)
-                    elif event.key == K_DOWN:
-                        self.new_pos(down)
-            # graph display
-            self.window.blit(self.background, (0, 0))
-            self.window.blit(self.banner, (0, 450))
-            [self.window.blit(self.wall, key) for key, value in self.maze_dico.items() if value == "W"]
-            self.window.blit(self.charac2_image, self.position_charac2)
-            self.window.blit(self.charac1_image, self.position_charac1)
+        while self.game_loop:
 
-            self.inventory()
-            self.items_display()
-            self.test_win()
+            while self.menu != 1 and self.game_loop != 0:
+                for event in pygame.event.get():
+                    if event.type == QUIT or event.type == KEYDOWN and event.key == K_ESCAPE:
+                        self.game_loop = 0
+                    if event.type == KEYDOWN:
+                        if event.key == K_LEFT:
+                            self.new_pos(left)
+                        elif event.key == K_RIGHT:
+                            self.new_pos(right)
+                        elif event.key == K_UP:
+                            self.new_pos(up)
+                        elif event.key == K_DOWN:
+                            self.new_pos(down)
+                # graph display
+                self.window.blit(self.background, (0, 0))
+                [self.window.blit(self.wall, key) for key, value in self.maze_dico.items() if value == "W"]
+                self.window.blit(self.charac2_image, self.position_charac2)
+                self.window.blit(self.charac1_image, self.position_charac1)
+                self.inventory_banner_update()
+                self.items_display()
+                self.test_win()
+                pygame.display.set_caption(self.caption)
+                pygame.display.flip()
 
-            pygame.display.set_caption(self.caption)
 
-            # graph refresh
-            pygame.display.flip()
+            while self.menu and self.game_loop != 0:
+                pygame.time.Clock().tick(30)
+                for event in pygame.event.get():
+                    if event.type == QUIT or event.type == KEYDOWN and event.key == K_ESCAPE:
+                        self.game_loop = 0
+                        self.menu = 0
+                    elif event.type == KEYDOWN and event.key == K_RETURN:
+                        print("enter")
+
+                if self.win == 1:
+                    self.window.blit(self.victory, (0, 0))
+
+                elif self.win == 0:
+                    self.window.blit(self.murdoc, (0, 0))
+                pygame.display.flip()
+
 
 
 if __name__ == "__main__":
