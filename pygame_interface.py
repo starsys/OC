@@ -107,6 +107,8 @@ class Pygame:
             pygame.display.set_caption(self.caption)
             self.menu = 1
             self.win = 0
+        else:
+            self.menu = 0
 
     def items_display(self):
         for key, value in self.item_dic.items():
@@ -128,6 +130,30 @@ class Pygame:
             elif value[1] == 1 and key == "aiguille":
                 self.window.blit(value[2], (205, 455))
 
+    def game_display(self):
+        self.window.blit(self.background, (0, 0))
+        [self.window.blit(self.wall, key) for key, value in self.maze_dico.items() if value == "W"]
+        self.window.blit(self.charac2_image, self.position_charac2)
+        self.window.blit(self.charac1_image, self.position_charac1)
+        self.inventory_banner_update()
+        self.items_display()
+        pygame.display.set_caption(self.caption)
+        pygame.display.flip()
+        self.test_win()
+
+    def game_init(self):
+        self.win = 0
+        self.caption = str(self.charac1.name).capitalize() + " a ramassé : "
+        self.position_charac1 = \
+            self.charac1_image.get_rect(topleft=[key for key, value in self.maze_dico.items() if value == "S"][0])
+
+    def end_menu_display(self):
+        if self.win == 1:
+            self.window.blit(self.victory, (0, 0))
+        elif self.win == 0:
+            self.window.blit(self.murdoc, (0, 0))
+
+
     def graphic_maze(self):
 
         # direction move keys variable assignment
@@ -135,10 +161,13 @@ class Pygame:
         right = (Pygame.BLOCK_PX_SIZE, 0)
         up = (0, -Pygame.BLOCK_PX_SIZE)
         down = (0, Pygame.BLOCK_PX_SIZE)
+        pygame.key.set_repeat(50, 30)
 
         while self.game_loop:
+            self.game_init()
 
             while self.menu != 1 and self.game_loop != 0:
+                pygame.time.Clock().tick(30)
                 for event in pygame.event.get():
                     if event.type == QUIT or event.type == KEYDOWN and event.key == K_ESCAPE:
                         self.game_loop = 0
@@ -152,33 +181,23 @@ class Pygame:
                         elif event.key == K_DOWN:
                             self.new_pos(down)
                 # graph display
-                self.window.blit(self.background, (0, 0))
-                [self.window.blit(self.wall, key) for key, value in self.maze_dico.items() if value == "W"]
-                self.window.blit(self.charac2_image, self.position_charac2)
-                self.window.blit(self.charac1_image, self.position_charac1)
-                self.inventory_banner_update()
-                self.items_display()
-                self.test_win()
-                pygame.display.set_caption(self.caption)
-                pygame.display.flip()
+                self.game_display()
 
 
-            while self.menu and self.game_loop != 0:
+
+            while self.menu == 1 and self.game_loop != 0:
                 pygame.time.Clock().tick(30)
                 for event in pygame.event.get():
                     if event.type == QUIT or event.type == KEYDOWN and event.key == K_ESCAPE:
-                        self.game_loop = 0
                         self.menu = 0
+                        self.game_loop = 0
+
                     elif event.type == KEYDOWN and event.key == K_RETURN:
-                        print("enter")
+                        self.items_dic()
+                        self.menu = 0
 
-                if self.win == 1:
-                    self.window.blit(self.victory, (0, 0))
-
-                elif self.win == 0:
-                    self.window.blit(self.murdoc, (0, 0))
+                self.end_menu_display()
                 pygame.display.flip()
-
 
 
 if __name__ == "__main__":
