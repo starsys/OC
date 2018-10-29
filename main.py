@@ -17,14 +17,13 @@ example : if maze's arrival is at the 2nd block of the 7th line, you'll find fol
 """
 
 
-if __name__ == "__main__":
+grid1 = NewGrid("maze.txt")
+dico_grid1 = grid1.setgrid()
+macgyver = Charac("macgyver")
+gardien = Charac("gardien")
+# Pygame instance parameters are : an instance of Newgrid, one instance of "good" character (movable),
+# one instance of "bad" character (not movable), any number of item's names to be picked up by the "good" character.
+# item's and character's names should be the same as their related png file name. ("macgyver" for "macgyver.png")
+pyga1 = Pygame(dico_grid1, macgyver, gardien, "ether", "tube", "aiguille")
+pyga1.graphic_maze()
 
-    grid1 = NewGrid("maze.txt")
-    dico_grid1 = grid1.setgrid()
-    macgyver = Charac("macgyver")
-    gardien = Charac("gardien")
-    # Pygame instance parameters are : an instance of Newgrid, one instance of "good" character (movable),
-    # one instance of "bad" character (not movable), any number of item's names to be picked up by the "good" character.
-    # item's and character's names should be the same as their related png file name. ("macgyver" for "macgyver.png")
-    pyga1 = Pygame(dico_grid1, macgyver, gardien, "ether", "tube", "aiguille")
-    pyga1.graphic_maze()

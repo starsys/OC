@@ -10,6 +10,7 @@ import random
 class Pygame:
 
     BLOCK_PX_SIZE = 30
+    BANNER_HEIGHT = 83
 
     def __init__(self, maze_dico, charac1, charac2, *items):
         self.maze_dico = self.maze_convert(maze_dico)
@@ -44,6 +45,8 @@ class Pygame:
         self.position_charac2 = \
             self.charac2_image.get_rect(topleft=[key for key, value in self.maze_dico.items() if value == "A"][0])
         self.items_dic()
+        self.banner = pygame.image.load(
+            os.path.dirname(__file__) + "/" + "images" + "/" + "banner.png").convert()
 
     def maze_convert(self, maze_dico):
         # maze_dico in pixel size and x/y coordinates inversion for graph usage
@@ -61,7 +64,7 @@ class Pygame:
         return max([key[1] for key in self.maze_dico.keys()])
 
     def resolution(self):
-        self.x_resolution = (self.get_max_row() + Pygame.BLOCK_PX_SIZE)
+        self.x_resolution = (self.get_max_row() + Pygame.BLOCK_PX_SIZE + Pygame.BANNER_HEIGHT)
         self.y_resolution = (self.get_max_line() + Pygame.BLOCK_PX_SIZE)
 
     def format_pos(self, rect):
@@ -111,7 +114,15 @@ class Pygame:
                     self.caption += " FIGHT !  "
             elif value[1] != 1:
                 self.window.blit(value[2], value[0])
-            # pass
+
+    def inventory(self):
+        for key, value in self.item_dic.items():
+            if value[1] == 1 and key == "tube":
+                self.window.blit(value[2], (105, 455))
+            elif value[1] == 1 and key == "ether":
+                self.window.blit(value[2], (5, 455))
+            elif value[1] == 1 and key == "aiguille":
+                self.window.blit(value[2], (205, 455))
 
     def graphic_maze(self):
 
@@ -136,10 +147,12 @@ class Pygame:
                         self.new_pos(down)
             # graph display
             self.window.blit(self.background, (0, 0))
+            self.window.blit(self.banner, (0, 450))
             [self.window.blit(self.wall, key) for key, value in self.maze_dico.items() if value == "W"]
             self.window.blit(self.charac2_image, self.position_charac2)
             self.window.blit(self.charac1_image, self.position_charac1)
 
+            self.inventory()
             self.items_display()
             self.test_win()
 
