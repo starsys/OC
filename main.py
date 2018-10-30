@@ -1,19 +1,17 @@
-# -*- coding: utf8 -*-
+# coding: utf-8
 
 from newgrid import *
 from pygame_interface import *
 from charac import *
 
-""" Create "dico dictionnary" based on a given "maze.txt" containing some lines of characters. 
-This .txt file represent the maze we want to create. Each character of each line symbolize a maze block.
-Block_types :
-"S" = maze start
-"A" = maze arrival
-"W" = maze wall
-"P" = maze path
-dico.keys are tuples. Each index correspond to line index (2 digits) and row index (2 digits) coordinates.
-dico.values are block_types ("S", "A", "W" or "P")
-example : if maze's arrival is at the 2nd block of the 7th line, you'll find following value in dico : {(07, 01) = "A"}
+""" This is the main program of the game.
+grid1 is an instance of Newgrid with maze.txt attribute
+setgrid() will create a grid based on maze.txt
+then 2 instances of characters will be created
+then a Pygame instance is created with attributes: dico_grid1, 2 character's and 3 item's names
+The first given character will be considered as "good" and will be movable in the game. 
+The second one is fixed and considered as "bad"
+items and characters will be showed in the game using the same name ".png" file
 """
 
 
