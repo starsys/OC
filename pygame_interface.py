@@ -86,7 +86,7 @@ class Pygame:
         pos_list = [key for key, value in self.maze_dico.items() if value == "P"]
         for item in self.items:
             rand_numb = random.randint(0, len(pos_list) - 1)
-            # create an items dictionary
+            # create an items dictionary. Key = item's name. Value is a list with 3 indexes
             # {"item_name": [random_position, picked_state 0=unpicked 1=already picked_up, image surface rect]}
             self.item_dic[item] = [pos_list.pop(rand_numb), 0,
                                    pygame.image.load(os.path.dirname(__file__) + "/"
@@ -107,8 +107,6 @@ class Pygame:
             pygame.display.set_caption(self.caption)
             self.menu = 1
             self.win = 0
-        else:
-            self.menu = 0
 
     def items_display(self):
         for key, value in self.item_dic.items():
@@ -139,7 +137,6 @@ class Pygame:
         self.items_display()
         pygame.display.set_caption(self.caption)
         pygame.display.flip()
-        self.test_win()
 
     def game_init(self):
         self.win = 0
@@ -180,10 +177,8 @@ class Pygame:
                             self.new_pos(up)
                         elif event.key == K_DOWN:
                             self.new_pos(down)
-                # graph display
                 self.game_display()
-
-
+                self.test_win()
 
             while self.menu == 1 and self.game_loop != 0:
                 pygame.time.Clock().tick(30)
