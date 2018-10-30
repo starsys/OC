@@ -1,4 +1,3 @@
-
 ========================================================
 Maze game based on Mac Gyver world.
 Written in Python by Théophile Guettier
@@ -6,15 +5,13 @@ theophile.guettier@gmail.com
 ========================================================
 Prerequisite : 
 - python3 (3.6 or 6.7) must be installed on your machine
-
 ========================================================
 Install:
 - Unpack all files from GitHub on your machine.
 - From this unpack folder, 
 run "pip install -r requirements.txt" in your terminal.
 (This will install all required modules)
-
-=======================================================
+========================================================
 Launch:
 - launch main.py 
 just write "/path/of/your/.py/file/python3 main.py" 
@@ -30,8 +27,7 @@ Each character of the maze.txt file symbolize blocks :
 "P" = maze path
 Only first occurrence of "S" and "A" from upper left
 of the file will be taken into account.
-
-==========================================================
+========================================================
 Usage:
 - use direction keys of your keyboards to move Macgyver
 - collect all items (aiguille, ether and tube)
