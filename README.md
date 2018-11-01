@@ -1,4 +1,4 @@
-﻿#MacGyver Maze Game
+﻿#MacGyver Maze Game 2018
 
 Maze game based on MacGyver world.
 Written in Python by Théophile Guettier
