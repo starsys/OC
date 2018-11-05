@@ -14,20 +14,21 @@ run "pip install -r requirements.txt" in your terminal.
 This will install all required modules
 
 ## Launch:
-- launch main.py 
+- launch main.py  
 just write "/path/of/your/.py/file/python3 main.py" 
 into your terminal and press "enter"
 (depending of PATH you may type "python" or "python3")
 
-## Launch in virtual machine (mac or unix. For windows: use powershell):
-launch in your terminal: "pyton –m pip install –upgrade pip" (to upgrade pip)
-then install virtualenv: "pip install virtualenv"
-go into the path you want your virtualenv to be created
-(cd /path/of/your/.py/file)
-create your virtualenv: "virtualenv -p python3 env"
-activate your virtualenv: "source env/bin/activate"
-install dependencies: "pip install -r requirements.txt"
-dactivate your virtualenv when finished: "deactivate"
+## How to Launch in virtual machine 
+(Valid fo mac or linux. For windows: use powershell instead):
+- launch in your terminal: "pyton –m pip install –upgrade pip" (to upgrade pip)  
+- then install virtualenv: "pip install virtualenv"  
+- go into the path you want your virtualenv to be created  
+("cd /path/of/your/.py/file")  
+- create your virtualenv: "virtualenv -p python3 env" (or "python")
+- activate your virtualenv: "source env/bin/activate"  
+- install dependencies: "pip install -r requirements.txt"  
+- deactivate your virtualenv when finished: "deactivate"  
 
 ## This game uses "maze.txt" file to generate maze.
 You can edit it to and create your own maze.
