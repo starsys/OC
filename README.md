@@ -19,6 +19,16 @@ just write "/path/of/your/.py/file/python3 main.py"
 into your terminal and press "enter"
 (depending of PATH you may type "python" or "python3")
 
+## Launch in virtual machine (mac or unix. For windows: use powershell):
+launch in your terminal: "pyton –m pip install –upgrade pip" (to upgrade pip)
+then install virtualenv: "pip install virtualenv"
+go into the path you want your virtualenv to be created
+(cd /path/of/your/.py/file)
+create your virtualenv: "virtualenv -p python3 env"
+activate your virtualenv: "source env/bin/activate"
+install dependencies: "pip install -r requirements.txt"
+dactivate your virtualenv when finished: "deactivate"
+
 ## This game uses "maze.txt" file to generate maze.
 You can edit it to and create your own maze.
 Each character of the maze.txt file symbolize blocks :
