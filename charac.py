@@ -1,5 +1,7 @@
 # coding: utf-8
 
+"""This class creates characters with a name attribute"""
+
 
 class Charac:
 

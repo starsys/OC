@@ -5,10 +5,9 @@ from pygame_interface import *
 from charac import *
 
 """ This is the main program of the game.
-grid1 is an instance of Newgrid with maze.txt attribute
-setgrid() will create a grid based on maze.txt
-then 2 instances of characters will be created
-then a Pygame instance is created with attributes: dico_grid1, 2 character's and 3 item's names
+- setgrid() will create a grid based on maze.txt
+- 2 instances of characters are created
+- .graphic_maze() method is applied on a Pygame instance with attributes: dico_grid1, 2 character's and 3 item's names
 The first given character will be considered as "good" and will be movable in the game. 
 The second one is fixed and considered as "bad"
 items and characters will be showed in the game using the same name ".png" file

@@ -7,6 +7,9 @@ import os
 import random
 
 
+""" This class manage the graphical part of the game"""
+
+
 class Pygame:
 
     BLOCK_PX_SIZE = 30

@@ -19,7 +19,7 @@ into your terminal and press "enter"
 (depending of PATH you may type "python" or "python3")
 
 ### How to install and launch from a virtual environment 
-(Valid fo mac or linux. For windows: use powershell instead):
+(Valid for mac or linux. For windows: use powershell instead):
 - launch in your terminal: "pyton –m pip install –upgrade pip" (to upgrade pip)  
 - then install virtualenv: "pip install virtualenv"  
 - go into the path you want your virtualenv to be created  
