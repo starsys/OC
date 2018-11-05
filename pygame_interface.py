@@ -111,7 +111,7 @@ class Pygame:
                 self.item_dic[key][1] = 1
                 self.caption += (str(key).capitalize() + " - ")
                 if sum([value[1] for value in self.item_dic.values()]) == len(self.items):
-                    self.caption += " FIGHT !  "
+                    self.caption += " GO !  "
             elif value[1] != 1:
                 self.window.blit(value[2], value[0])
 
