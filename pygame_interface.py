@@ -10,7 +10,7 @@ import random
 class Pygame:
 
     BLOCK_PX_SIZE = 30
-    BANNER_HEIGHT = 83
+    BANNER_HEIGHT = 82
 
     def __init__(self, maze_dico, charac1, charac2, *items):
         self.maze_dico = self.maze_convert(maze_dico)
@@ -22,16 +22,16 @@ class Pygame:
         pygame.init()
         self.caption = str(charac1.name).capitalize() + " a ramassé : "
         pygame.display.set_caption(self.caption)
-        self.x_resolution = None
-        self.y_resolution = None
-        self.resolution()
+        self.x_resolution = (self.get_max_row() + Pygame.BLOCK_PX_SIZE)
+        self.y_resolution = (self.get_max_line() + Pygame.BLOCK_PX_SIZE)
         # graph loop
         self.game_loop = 1
         # Pygame window opening
-        self.window = pygame.display.set_mode((self.y_resolution, self.x_resolution))
+        self.window = pygame.display.set_mode((self.y_resolution, self.x_resolution + Pygame.BANNER_HEIGHT))
         # backgroung load
-        self.background = pygame.image.load(
-            os.path.dirname(__file__) + "/" + "images" + "/" + "background_and_banner.jpg").convert()
+        self.background = pygame.Surface(self.window.get_size())
+        # banner load
+        self.banner = pygame.image.load(os.path.dirname(__file__) + "/" + "images" + "/" + "banner.png").convert()
         # wall block load
         self.wall = pygame.image.load(os.path.dirname(__file__) + "/" + "images" + "/" + "wall.png").convert_alpha()
         # charac image import
@@ -66,10 +66,6 @@ class Pygame:
 
     def get_max_row(self):
         return max([key[1] for key in self.maze_dico.keys()])
-
-    def resolution(self):
-        self.x_resolution = (self.get_max_row() + Pygame.BLOCK_PX_SIZE + Pygame.BANNER_HEIGHT)
-        self.y_resolution = (self.get_max_line() + Pygame.BLOCK_PX_SIZE)
 
     def format_pos(self, rect):
         return tuple(rect)[:2]
@@ -122,14 +118,16 @@ class Pygame:
     def inventory_banner_update(self):
         for key, value in self.item_dic.items():
             if value[1] == 1 and key == "tube":
-                self.window.blit(value[2], (105, 455))
+                self.window.blit(value[2], (105, self.x_resolution + 5))
             elif value[1] == 1 and key == "ether":
-                self.window.blit(value[2], (5, 455))
+                self.window.blit(value[2], (5, self.x_resolution + 5))
             elif value[1] == 1 and key == "aiguille":
-                self.window.blit(value[2], (205, 455))
+                self.window.blit(value[2], (205, self.x_resolution + 5))
 
     def game_display(self):
         self.window.blit(self.background, (0, 0))
+        self.background.fill((200, 180, 130))
+        self.window.blit(self.banner, (0, self.x_resolution))
         [self.window.blit(self.wall, key) for key, value in self.maze_dico.items() if value == "W"]
         self.window.blit(self.charac2_image, self.position_charac2)
         self.window.blit(self.charac1_image, self.position_charac1)
@@ -150,9 +148,7 @@ class Pygame:
         elif self.win == 0:
             self.window.blit(self.murdoc, (0, 0))
 
-
     def graphic_maze(self):
-
         # direction move keys variable assignment
         left = (-Pygame.BLOCK_PX_SIZE, 0)
         right = (Pygame.BLOCK_PX_SIZE, 0)

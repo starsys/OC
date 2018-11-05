@@ -24,4 +24,3 @@ gardien = Charac("gardien")
 # item's and character's names should be the same as their related png file name. ("macgyver" for "macgyver.png")
 pyga1 = Pygame(dico_grid1, macgyver, gardien, "ether", "tube", "aiguille")
 pyga1.graphic_maze()
-
