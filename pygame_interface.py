@@ -25,33 +25,32 @@ class Pygame:
         pygame.init()
         self.caption = str(charac1.name).capitalize() + " a ramassé : "
         pygame.display.set_caption(self.caption)
-        self.x_resolution = (self.get_max_row() + Pygame.BLOCK_PX_SIZE)
-        self.y_resolution = (self.get_max_line() + Pygame.BLOCK_PX_SIZE)
+        self.x_res = (self.get_max_row() + Pygame.BLOCK_PX_SIZE)
+        self.y_res = (self.get_max_line() + Pygame.BLOCK_PX_SIZE)
         # graph loop
         self.game_loop = 1
         # Pygame window opening
-        self.window = pygame.display.set_mode((self.y_resolution, self.x_resolution + Pygame.BANNER_HEIGHT))
+        self.window = pygame.display.set_mode((self.y_res, self.x_res + Pygame.BANNER_HEIGHT))
         # backgroung load
         self.background = pygame.Surface(self.window.get_size())
+        img_path = os.path.dirname(__file__) + "/" + "images" + "/"
         # banner load
-        self.banner = pygame.image.load(os.path.dirname(__file__) + "/" + "images" + "/" + "banner.png").convert()
+        self.banner = pygame.image.load(img_path + "banner.png").convert()
         # wall block load
-        self.wall = pygame.image.load(os.path.dirname(__file__) + "/" + "images" + "/" + "wall.png").convert_alpha()
+        self.wall = pygame.image.load(img_path + "wall.png").convert_alpha()
         # charac image import
-        self.charac1_image = pygame.image.load(
-            os.path.dirname(__file__) + "/" + "images" + "/" + self.charac1.name + ".png").convert_alpha()
-        self.charac2_image = pygame.image.load(
-            os.path.dirname(__file__) + "/" + "images" + "/" + self.charac2.name + ".png").convert_alpha()
+        self.charac1_image = pygame.image.load(img_path + self.charac1.name + ".png").convert_alpha()
+        self.charac2_image = pygame.image.load(img_path + self.charac2.name + ".png").convert_alpha()
         # define graphical init position of character (first occurrence of "S" value in maze_dico)
         self.position_charac1 = \
             self.charac1_image.get_rect(topleft=[key for key, value in self.maze_dico.items() if value == "S"][0])
         self.position_charac2 = \
             self.charac2_image.get_rect(topleft=[key for key, value in self.maze_dico.items() if value == "A"][0])
         self.items_dic()
-        self.murdoc = pygame.image.load(
-            os.path.dirname(__file__) + "/" + "images" + "/" + "murdoc.jpg").convert()
-        self.victory = pygame.image.load(
-            os.path.dirname(__file__) + "/" + "images" + "/" + "victory.jpg").convert()
+        self.murdoc = pygame.transform.scale(pygame.image.load(img_path + "murdoc.jpg").convert(),
+                                             (self.y_res, self.x_res))
+        self.victory = pygame.transform.scale(pygame.image.load(img_path + "victory.jpg").convert(),
+                                              (self.y_res, self.x_res))
         self.menu = 0
         self.win = 0
 
@@ -121,16 +120,16 @@ class Pygame:
     def inventory_banner_update(self):
         for key, value in self.item_dic.items():
             if value[1] == 1 and key == "tube":
-                self.window.blit(value[2], (105, self.x_resolution + 5))
+                self.window.blit(value[2], (105, self.x_res + 5))
             elif value[1] == 1 and key == "ether":
-                self.window.blit(value[2], (5, self.x_resolution + 5))
+                self.window.blit(value[2], (5, self.x_res + 5))
             elif value[1] == 1 and key == "aiguille":
-                self.window.blit(value[2], (205, self.x_resolution + 5))
+                self.window.blit(value[2], (205, self.x_res + 5))
 
     def game_display(self):
         self.window.blit(self.background, (0, 0))
         self.background.fill((200, 180, 130))
-        self.window.blit(self.banner, (0, self.x_resolution))
+        self.window.blit(self.banner, (0, self.x_res))
         [self.window.blit(self.wall, key) for key, value in self.maze_dico.items() if value == "W"]
         self.window.blit(self.charac2_image, self.position_charac2)
         self.window.blit(self.charac1_image, self.position_charac1)
